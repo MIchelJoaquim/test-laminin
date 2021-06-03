@@ -1,16 +1,22 @@
-import express, { Express } from "express"
-import cors from "cors"
+import cors from 'cors';
+import * as dotenv from 'dotenv';
+import express, { Express } from 'express';
 
-const app: Express = express()
+import mongoBdConnect from './mongoose/index';
+import routes from './routes';
 
-const PORT: string | number = process.env.PORT || 4000
+dotenv.config();
 
-app.use(cors())
+const app: Express = express();
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
+const PORT: string | number = process.env.PORT || 4000;
 
-app.listen(PORT, () =>
-    console.log(`Server running on http://localhost:${PORT}`)
-)
+app.use(cors());
+app.use(routes);
+
+mongoBdConnect(process.env.MONGO_URI || 'error')
+  // eslint-disable-next-line no-console
+  .then(() => app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)))
+  .catch(error => {
+    throw error;
+  });
