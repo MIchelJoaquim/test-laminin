@@ -16,6 +16,7 @@ const PORT: string | number = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(routes);
 app.use('/auth', authRoutes);
@@ -26,6 +27,8 @@ app.use(passport.session());
 mongoBdConnect(process.env.MONGO_URI || 'error')
   // eslint-disable-next-line no-console
   .then(() => app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)))
-  .catch(error => {
-    throw error;
+  .catch(() => {
+    console.log(
+      'Lamentamos, não foi possível conectar ao bando de dados, por favor verifique a sua conexao a internet'
+    );
   });

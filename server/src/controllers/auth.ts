@@ -6,14 +6,12 @@ import jwt from 'jsonwebtoken';
 import { Consultant } from '../constants';
 import consultantModel from '../models/consultant.model';
 
-const passwordMatch = async (enterPassword: string, storedPassword: string): Promise<boolean> => {
-  const isEqual = await bcrypt.compare(enterPassword, storedPassword);
-  return isEqual;
-};
+const passwordMatch = async (enterPassword: string, storedPassword: string): Promise<boolean> =>
+  bcrypt.compare(enterPassword, storedPassword);
 
 const generateAccessToken = (consultant: { name: string; email: string }) =>
-  `${process.env.TOKEN_TYPE}${jwt.sign(consultant, process.env.JWT_SECRET || 'error', {
-    expiresIn: '1800s',
+  `${process.env.TOKEN_TYPE} ${jwt.sign(consultant, process.env.JWT_SECRET || 'error', {
+    expiresIn: process.env.TOKEN_EXPIRES_TIME || '1800s',
   })}`;
 
 const validateToken = (token: string, secret: string) => jwt.verify(token, secret);
@@ -76,11 +74,19 @@ export const signup = async (req: Request, res: Response) => {
 };
 
 export const tokenVerify = async (req: Request, res: Response) => {
-  const { token } = req.cookies;
+  const token = (req.query.token as string) || '';
+  const tokenDestruct = token.split(' ');
+
+  if (tokenDestruct.length === 0 || tokenDestruct[0] !== process.env.TOKEN_TYPE) {
+    res
+      .status(401)
+      .json({ msg: 'Lamentamos, infelizmente ocorreu um erro 1', error: 'invalid token' });
+  }
+
   try {
-    const decoded = await validateToken(token, process.env.JWT_SECRET || 'error');
+    const decoded = await validateToken(tokenDestruct[1], process.env.JWT_SECRET || 'error');
     return res.status(200).json({ user: decoded });
   } catch (error) {
-    return res.json({ msg: 'Lamentamos, infelizmente ocorreu um erro', error: error.message });
+    return res.json({ msg: 'Lamentamos, infelizmente ocorreu um erro 3', error: error.message });
   }
 };
