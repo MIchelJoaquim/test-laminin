@@ -1,11 +1,23 @@
 import { randomInt } from 'crypto';
 import { Request, Response, Router } from 'express';
 
+import { login, signup, tokenVerify } from '../controllers/auth';
+import { createMarket, readAllMarket } from '../controllers/market';
 import consultantModel from '../models/consultant.model';
 import historicModel from '../models/historic.model';
 import marketModel from '../models/market.model';
 
 const router: Router = Router();
+
+router.post('/auth/login', login);
+
+router.get('/auth/verify', tokenVerify);
+
+router.post('/auth/register', signup);
+
+router.post('/market', createMarket);
+
+router.get('/market', readAllMarket);
 
 router.get('/', async (_req: Request, res: Response) => {
   // for example propose only

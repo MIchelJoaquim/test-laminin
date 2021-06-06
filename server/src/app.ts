@@ -6,7 +6,6 @@ import passport from 'passport';
 
 import mongoBdConnect from './mongoose/index';
 import routes from './routes';
-import authRoutes from './routes/auth';
 
 dotenv.config();
 
@@ -18,8 +17,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-app.use(routes);
-app.use('/auth', authRoutes);
+
+app.use('/api', routes);
 
 app.use(passport.initialize());
 app.use(passport.session());
