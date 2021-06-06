@@ -1,5 +1,5 @@
 import { randomInt } from 'crypto';
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 
 import consultantModel from '../models/consultant.model';
 import historicModel from '../models/historic.model';
@@ -7,10 +7,14 @@ import marketModel from '../models/market.model';
 
 const router: Router = Router();
 
-router.get('/', async (_req, res) => {
+router.get('/', async (_req: Request, res: Response) => {
   // for example propose only
   const nemail = randomInt(100);
-  consultantModel.create({ name: 'Theodora', email: `michel${nemail}joaquim@gmail.com` });
+  consultantModel.create({
+    name: 'Theodora',
+    email: `michel01joaquim@gmail.com`,
+    password: '1234',
+  });
   const market = await marketModel.create({ name: `asa branca ${nemail}` });
   historicModel.create({
     // eslint-disable-next-line no-underscore-dangle

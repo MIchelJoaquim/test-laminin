@@ -1,15 +1,17 @@
 import { model, Schema } from 'mongoose';
 
+import { Historic } from '../constants';
+
 const historicSchema: Schema = new Schema({
-  market: {
+  [Historic.market]: {
     type: Schema.Types.ObjectId,
     required: true,
   },
-  productName: {
+  [Historic.productName]: {
     type: String,
     required: true,
   },
-  productPrice: {
+  [Historic.productPrice]: {
     type: Number,
     required: true,
   },
